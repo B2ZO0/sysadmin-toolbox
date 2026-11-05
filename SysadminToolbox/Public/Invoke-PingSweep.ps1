@@ -3,9 +3,9 @@
     .SYNOPSIS
         Pings every address of a subnet in parallel and lists the ones that answer, with their name.
     .EXAMPLE
-        Invoke-PingSweep -Subnet 192.168.10.0/24
+        Invoke-PingSweep -Subnet 192.0.2.0/24
     .EXAMPLE
-        Invoke-PingSweep 10.0.5.0/26 -ResolveNames | Export-Csv alive.csv -NoTypeInformation
+        Invoke-PingSweep 198.51.100.0/26 -ResolveNames | Export-Csv alive.csv -NoTypeInformation
     #>
     [CmdletBinding()]
     param(
@@ -36,11 +36,11 @@ function Get-SubnetAddress {
     .SYNOPSIS
         Lists the usable host addresses of an IPv4 subnet in CIDR notation.
     .EXAMPLE
-        Get-SubnetAddress 192.168.1.0/30
+        Get-SubnetAddress 192.0.2.0/30
     #>
     [CmdletBinding()]
     param([Parameter(Mandatory, Position = 0)][string]$Subnet)
-    if ($Subnet -notmatch '^(\d{1,3}(\.\d{1,3}){3})/(\d{1,2})$') { throw "Use CIDR notation, for example 192.168.1.0/24 (got '$Subnet')." }
+    if ($Subnet -notmatch '^(\d{1,3}(\.\d{1,3}){3})/(\d{1,2})$') { throw "Use CIDR notation, for example 192.0.2.0/24 (got '$Subnet')." }
     $prefix = [int]$Matches[3]
     if ($prefix -lt 16 -or $prefix -gt 32) { throw 'Prefix must be between /16 and /32.' }
     $bytes = ([System.Net.IPAddress]::Parse($Matches[1])).GetAddressBytes(); [array]::Reverse($bytes)
