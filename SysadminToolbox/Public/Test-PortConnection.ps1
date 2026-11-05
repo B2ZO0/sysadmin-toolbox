@@ -5,6 +5,8 @@
     .DESCRIPTION
         Opens a TCP connection to each host and port and reports Open, Closed (refused) or
         Filtered (no answer before the timeout). Works on Windows, Linux and macOS.
+        Windows retries a refused connection for about two seconds before giving up, hence
+        the 3-second default: lower it only for hosts you know answer quickly.
     .EXAMPLE
         Test-PortConnection -ComputerName srv-files01, srv-sql01 -Port 445, 1433, 3389
     .EXAMPLE
@@ -17,7 +19,7 @@
         [string[]]$ComputerName,
         [Parameter(Mandatory)]
         [ValidateRange(1, 65535)][int[]]$Port,
-        [ValidateRange(50, 60000)][int]$TimeoutMs = 1500
+        [ValidateRange(50, 60000)][int]$TimeoutMs = 3000
     )
     process {
         foreach ($c in $ComputerName) {

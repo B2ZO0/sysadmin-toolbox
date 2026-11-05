@@ -64,7 +64,7 @@ Describe 'Test-PortConnection' {
     }
     It 'sees a closed port' {
         $s = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, 0); $s.Start(); $p = $s.LocalEndpoint.Port; $s.Stop()
-        (Test-PortConnection -ComputerName 127.0.0.1 -Port $p).Status | Should -Be 'Closed'
+        (Test-PortConnection -ComputerName 127.0.0.1 -Port $p -TimeoutMs 6000).Status | Should -Be 'Closed'
     }
     It 'takes computers from the pipeline' {
         @('127.0.0.1', 'localhost' | Test-PortConnection -Port $script:openPort).Count | Should -Be 2
