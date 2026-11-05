@@ -6,7 +6,7 @@
 
 ### The PowerShell commands I wish I had on my first day as a sysadmin.
 
-**Disks, uptime, pending reboots, stopped services, local admins, event errors, ports, certificates,<br>ping sweeps and passwords: one module, plain objects, and an HTML report for any of them.**
+**Disks, uptime, pending reboots, computers that wake up on their own, stopped services, local admins, event errors, ports, certificates,<br>ping sweeps and passwords: one module, plain objects, and an HTML report for any of them.**
 
 [![CI](https://github.com/B2ZO0/sysadmin-toolbox/actions/workflows/ci.yml/badge.svg)](https://github.com/B2ZO0/sysadmin-toolbox/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-35d07f)](LICENSE)
@@ -28,6 +28,8 @@
 | `Get-DiskReport` | Which disks are running out of space? | Windows, local or remote |
 | `Get-UptimeReport` | When did each server last reboot, and does it need one? | Windows, local or remote |
 | `Get-PendingReboot` | Is a reboot pending, and why (updates, servicing, rename, SCCM)? | Windows, local or remote |
+| `Get-WakeReport` | Why do these computers turn back on by themselves? ([the story](docs/auto-wake.md)) | Windows, local or remote |
+| `Disable-AutoWake` | Stops them from waking up, silently, effective at the next shutdown (`-WhatIf` supported) | Windows, local or remote |
 | `Get-ServiceHealth` | Which automatic services are not running? | Windows, local or remote |
 | `Get-LocalAdminReport` | Who is local administrator? (works in any Windows language) | Windows, local or remote |
 | `Get-EventErrorSummary` | Which errors came back most often in the event logs? | Windows, local or remote |
@@ -63,6 +65,10 @@ Or clone the repository and run `Import-Module .\SysadminToolbox\SysadminToolbox
 $servers = (Get-ADComputer -Filter 'OperatingSystem -like "*Server*"').Name
 Get-DiskReport -ComputerName $servers | ConvertTo-ToolboxHtml -Title 'Disk space' -Path disks.html -Open
 Get-UptimeReport -ComputerName $servers | Where-Object RebootPending
+
+# "My computer turned itself back on": find out why, then fix it silently
+Get-WakeReport -ComputerName PC-012, PC-013
+Disable-AutoWake -ComputerName PC-012, PC-013 -WhatIf
 
 # Before a migration: can the new server reach what it needs?
 Test-PortConnection dc01, dc02 -Port 53, 88, 389, 445, 636, 3268

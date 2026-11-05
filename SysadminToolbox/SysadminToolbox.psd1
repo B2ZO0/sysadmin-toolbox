@@ -5,12 +5,12 @@
     Author            = 'Enzo Marechal'
     CompanyName       = 'B2ZO0'
     Copyright         = '(c) 2026 Enzo Marechal. MIT license.'
-    Description       = 'Everyday PowerShell tools for Windows admins: disks, uptime, pending reboots, services, local admins, event errors, ports, certificates, ping sweep, passwords and HTML reports.'
+    Description       = 'Everyday PowerShell tools for Windows admins: disks, uptime, pending reboots, computers that turn back on by themselves, services, local admins, event errors, ports, certificates, ping sweep, passwords and HTML reports.'
     PowerShellVersion = '5.1'
     CompatiblePSEditions = @('Desktop', 'Core')
     FunctionsToExport = @(
-        'ConvertTo-ToolboxHtml', 'Get-CertificateExpiry', 'Get-DiskReport', 'Get-EventErrorSummary', 'Get-LocalAdminReport',
-        'Get-PendingReboot', 'Get-ServiceHealth', 'Get-SubnetAddress', 'Get-UptimeReport', 'Invoke-PingSweep',
+        'ConvertTo-ToolboxHtml', 'Disable-AutoWake', 'Get-CertificateExpiry', 'Get-DiskReport', 'Get-EventErrorSummary', 'Get-LocalAdminReport',
+        'Get-PendingReboot', 'Get-ServiceHealth', 'Get-SubnetAddress', 'Get-UptimeReport', 'Get-WakeReport', 'Invoke-PingSweep',
         'New-RandomPassword', 'Test-PortConnection'
     )
     AliasesToExport   = @('tpc')

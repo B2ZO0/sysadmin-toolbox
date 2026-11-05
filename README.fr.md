@@ -6,7 +6,7 @@
 
 ### Les commandes PowerShell que j'aurais aimé avoir dès mon premier jour d'admin.
 
-**Disques, uptime, redémarrages en attente, services arrêtés, admins locaux, erreurs des journaux, ports, certificats,<br>balayage ping et mots de passe : un seul module, des objets simples, et un rapport HTML pour chacun.**
+**Disques, uptime, redémarrages en attente, postes qui se rallument tout seuls, services arrêtés, admins locaux, erreurs des journaux, ports, certificats,<br>balayage ping et mots de passe : un seul module, des objets simples, et un rapport HTML pour chacun.**
 
 [![CI](https://github.com/B2ZO0/sysadmin-toolbox/actions/workflows/ci.yml/badge.svg)](https://github.com/B2ZO0/sysadmin-toolbox/actions/workflows/ci.yml)
 [![Licence : MIT](https://img.shields.io/badge/licence-MIT-35d07f)](LICENSE)
@@ -27,6 +27,8 @@
 | `Get-DiskReport` | Quels disques manquent de place ? | Windows, local ou à distance |
 | `Get-UptimeReport` | Quand chaque serveur a-t-il redémarré, et doit-il redémarrer ? | Windows, local ou à distance |
 | `Get-PendingReboot` | Un redémarrage est-il en attente, et pourquoi (mises à jour, maintenance, renommage, SCCM) ? | Windows, local ou à distance |
+| `Get-WakeReport` | Pourquoi ces postes se rallument-ils tout seuls ? ([l'histoire](docs/rallumage-auto.md)) | Windows, local ou à distance |
+| `Disable-AutoWake` | Les empêche de se réveiller, en silence, effectif au prochain arrêt (`-WhatIf` possible) | Windows, local ou à distance |
 | `Get-ServiceHealth` | Quels services automatiques ne tournent pas ? | Windows, local ou à distance |
 | `Get-LocalAdminReport` | Qui est administrateur local ? (dans toutes les langues de Windows) | Windows, local ou à distance |
 | `Get-EventErrorSummary` | Quelles erreurs reviennent le plus dans les journaux ? | Windows, local ou à distance |
@@ -62,6 +64,10 @@ Ou clone le dépôt et lance `Import-Module .\SysadminToolbox\SysadminToolbox.ps
 $servers = (Get-ADComputer -Filter 'OperatingSystem -like "*Server*"').Name
 Get-DiskReport -ComputerName $servers | ConvertTo-ToolboxHtml -Title 'Espace disque' -Path disques.html -Open
 Get-UptimeReport -ComputerName $servers | Where-Object RebootPending
+
+# « Mon PC s'est rallumé tout seul » : trouver pourquoi, puis corriger en silence
+Get-WakeReport -ComputerName PC-012, PC-013
+Disable-AutoWake -ComputerName PC-012, PC-013 -WhatIf
 
 # Avant une migration : le nouveau serveur joint-il tout ce qu'il faut ?
 Test-PortConnection dc01, dc02 -Port 53, 88, 389, 445, 636, 3268

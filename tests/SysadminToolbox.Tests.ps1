@@ -4,8 +4,8 @@
 }
 
 Describe 'Module' {
-    It 'exports the 12 commands and the tpc alias' {
-        (Get-Command -Module SysadminToolbox -CommandType Function).Count | Should -Be 12
+    It 'exports the 14 commands and the tpc alias' {
+        (Get-Command -Module SysadminToolbox -CommandType Function).Count | Should -Be 14
         (Get-Alias tpc).ResolvedCommandName | Should -Be 'Test-PortConnection'
     }
     It 'has help for every command' {
@@ -110,6 +110,24 @@ Describe 'Windows commands' -Skip:(-not (($PSVersionTable.PSEdition -eq 'Desktop
     It 'Get-ServiceHealth and Get-EventErrorSummary run' {
         { Get-ServiceHealth -WarningAction Stop } | Should -Not -Throw
         { Get-EventErrorSummary -Hours 2 -WarningAction Stop } | Should -Not -Throw
+    }
+    It 'Get-WakeReport diagnoses this computer without changing it' {
+        $r = Get-WakeReport -Days 2
+        $r.ComputerName | Should -Be $env:COMPUTERNAME
+        $r.PSObject.Properties.Name | Should -Contain 'LikelyCauses'
+        $r.PSObject.Properties.Name | Should -Not -Contain 'Applied'
+    }
+    It 'Disable-AutoWake -WhatIf changes nothing' {
+        $before = (Get-WakeReport -Days 1).RebootOnCrash
+        Disable-AutoWake -WhatIf | Should -BeNullOrEmpty
+        (Get-WakeReport -Days 1).RebootOnCrash | Should -Be $before
+    }
+    It 'Disable-AutoWake applies the fixes' {
+        $r = Disable-AutoWake -Confirm:$false
+        $r.Applied | Should -Contain 'Fast startup off'
+        $r.FastStartup | Should -BeFalse
+        $r.RebootOnCrash | Should -BeFalse
+        $r.MaintenanceWake | Should -BeFalse
     }
     It 'Invoke-PingSweep finds this computer' {
         (Invoke-PingSweep 127.0.0.1/32).Status | Should -Be 'Up'
